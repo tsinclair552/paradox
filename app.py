@@ -1,6 +1,5 @@
 import streamlit as st
 import random
-import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 
@@ -405,14 +404,13 @@ with st.sidebar:
         st.session_state.n_simulations = n
         st.session_state.sim_results = None
 
-    if st.button("▶ Run Simulation", type="primary", use_container_width=True):
-        with st.spinner(f"Running {n:,} simulations..."):
-            st.session_state.sim_results = run_simulation(n)
-        st.rerun()
-
     if st.button("↺ Reset Game", use_container_width=True):
         reset_game()
         st.rerun()
+
+# Auto-run simulation when N changes (instant updates per spec)
+if st.session_state.sim_results is None:
+    st.session_state.sim_results = run_simulation(st.session_state.n_simulations)
 
 
 # =============================================================================
@@ -517,8 +515,8 @@ results = st.session_state.sim_results
 
 if results is None:
     st.info(
-        "👈 Set the number of simulations in the sidebar and click "
-        "**Run Simulation** to see the statistics."
+        "👈 Adjust the simulation count in the sidebar — "
+        "results update automatically."
     )
 else:
     n = st.session_state.n_simulations
